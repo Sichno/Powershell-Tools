@@ -1,0 +1,11 @@
+$groups = Get-ADGroup -Filter * -Properties * | Where-Object Members -gt 0
+foreach ($group in $groups) {
+    Write-Output "~~~~~This is $($group.name)~~~~~"
+    $users = Get-ADGroupMember -Identity $group 
+    foreach ($name in $users) { 
+        if (Get-ADUser -identity "$name" -Properties * | Where-Object ObjectClass  -EQ "user") {
+            Get-ADUser -Identity "$name" | Where-Object Enabled -EQ 1 | select name
+            }
+        Else { Write-Output "SUBGROUP" + $name.name}
+            }
+    }
